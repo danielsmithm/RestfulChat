@@ -33,25 +33,25 @@ public class ChatApiExceptionHandler {
         return new ChatCommunicationException("An error ocurred while communicating with the chat server.",ex);
     }
 
-    public static void handleIfUserNotFoundException(Throwable cause) throws UserNotFoundException{
+    public static void throwIfUserNotFoundException(Throwable cause) throws UserNotFoundException{
         if(cause instanceof UserNotFoundException){
             throw (UserNotFoundException) cause;
         }
     }
 
-    public static void handleIfChatCommunicationException(Throwable cause) throws ChatCommunicationException{
+    public static void throwIfChatCommunicationException(Throwable cause) throws ChatCommunicationException{
         if(cause instanceof ChatCommunicationException){
             throw (ChatCommunicationException) cause;
         }
     }
 
-    public static void handleIfUserAlreadyExistsException(Throwable cause) throws UserAlreadyExistsException {
+    public static void throwIfUserAlreadyExistsException(Throwable cause) throws UserAlreadyExistsException {
         if(cause instanceof UserAlreadyExistsException){
             throw (UserAlreadyExistsException) cause;
         }
     }
 
-    public static void handleIfGroupNotExistsException(Throwable cause) throws GroupNotExistsException {
+    public static void throwIfGroupNotExistsException(Throwable cause) throws GroupNotExistsException {
         if(cause instanceof GroupNotExistsException){
             throw (GroupNotExistsException) cause;
         }

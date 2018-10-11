@@ -21,6 +21,11 @@ import br.ufrn.requestbody.RegisterUserDTO;
 
 import java.util.List;
 
+import static br.ufrn.chat.exception.ChatApiExceptionHandler.*;
+
+/**
+ * Implementação da api de chat.
+ */
 public class DefaultChatAPI implements ChatAPI {
 
     private ChatResourceClient chatResourceClient;
@@ -52,8 +57,8 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfUserAlreadyExistsException(cause);
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            throwIfUserAlreadyExistsException(cause);
+            throwIfChatCommunicationException(cause);
 
             throw ex;
         }
@@ -66,8 +71,8 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            throwIfGroupNotExistsException(cause);
+            throwIfChatCommunicationException(cause);
 
             throw ex;
         }
@@ -84,8 +89,8 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfUserNotFoundException(cause);
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            throwIfUserNotFoundException(cause);
+            throwIfChatCommunicationException(cause);
 
             throw ex;
         }
@@ -98,8 +103,8 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            throwIfGroupNotExistsException(cause);
+            throwIfChatCommunicationException(cause);
 
             throw ex;
         }
@@ -117,9 +122,9 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfUserNotFoundException(cause);
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
-            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
+            throwIfUserNotFoundException(cause);
+            throwIfChatCommunicationException(cause);
+            throwIfGroupNotExistsException(cause);
 
             throw ex;
         }
@@ -138,9 +143,9 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfUserNotFoundException(cause);
-            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            throwIfUserNotFoundException(cause);
+            throwIfGroupNotExistsException(cause);
+            throwIfChatCommunicationException(cause);
 
             throw ex;
         }
@@ -154,7 +159,7 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            throwIfChatCommunicationException(cause);
 
             throw ex;
         }
@@ -167,7 +172,7 @@ public class DefaultChatAPI implements ChatAPI {
         } catch (ClientException ex) {
             Throwable cause = ex.getCause();
 
-            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            throwIfChatCommunicationException(cause);
 
             throw ex;
         }

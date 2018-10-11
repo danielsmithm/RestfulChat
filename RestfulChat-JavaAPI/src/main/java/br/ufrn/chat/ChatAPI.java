@@ -13,6 +13,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * Interface que define a api Java para comunicação com o serviço de chat.
+ */
 public interface ChatAPI extends Remote, Serializable {
 
     /**
