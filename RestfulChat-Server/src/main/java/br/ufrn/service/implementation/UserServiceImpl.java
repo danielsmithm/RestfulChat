@@ -16,7 +16,7 @@ import java.io.Serializable;
  * @see br.ufrn.service.UserService
  */
 @Service
-public class UserServiceImpl implements UserService,Serializable {
+public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
 

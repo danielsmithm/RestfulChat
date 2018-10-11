@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @see br.ufrn.service.GroupService
  */
 @Service
-public class GroupServiceImpl implements GroupService, Serializable {
+public class GroupServiceImpl implements GroupService {
 
     private GroupRepository groupRepository;
     private MessagePublisher messagePublisher;
