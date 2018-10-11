@@ -23,7 +23,7 @@ import java.util.Scanner;
 /**
  * Implementação da GUI do chat.
  */
-public class ChatGui extends JFrame{
+public class ChatGui extends JFrame {
 
     private GroupDTO group;
     private final ChatAPI chatAPI;
@@ -43,12 +43,12 @@ public class ChatGui extends JFrame{
 
             GroupChooseGui.openGroupChooseGui(chatAPI, activeUser);
         } catch (ChatCommunicationException e) {
-            JOptionPane.showMessageDialog(null,"Wasn't possible estabilish a connection to server. Try again later.");
+            JOptionPane.showMessageDialog(null, "Wasn't possible estabilish a connection to server. Try again later.");
         }
 
     }
 
-    public ChatGui(UserDTO activeUser, GroupDTO group, ChatAPI chatAPI){
+    public ChatGui(UserDTO activeUser, GroupDTO group, ChatAPI chatAPI) {
         this.activeUser = activeUser;
         this.chatAPI = chatAPI;
         this.group = group;
@@ -72,9 +72,9 @@ public class ChatGui extends JFrame{
             public void actionPerformed(ActionEvent e) {
 
                 try {
-                    chatAPI.quitGroup(group.getId(),activeUser);
+                    chatAPI.quitGroup(group.getId(), activeUser);
                     setVisible(false);
-                    GroupChooseGui.openGroupChooseGui(chatAPI,activeUser);
+                    GroupChooseGui.openGroupChooseGui(chatAPI, activeUser);
                 } catch (ChatCommunicationException e1) {
                     ExceptionHandlingUtils.handleChatCommunitationException(e1);
                 } catch (GroupNotExistsException e1) {
@@ -108,21 +108,21 @@ public class ChatGui extends JFrame{
     private JPanel createMessageSenderPannel() {
         JPanel messageSendPanel = new JPanel();
 
-        messageSendPanel.setSize(800,140);
+        messageSendPanel.setSize(800, 140);
         messageSendPanel.setPreferredSize(messageSendPanel.getSize());
 
         this.messageTextArea = new JTextArea();
 
-        this.messageTextArea.setSize(480,140);
+        this.messageTextArea.setSize(480, 140);
         this.messageTextArea.setPreferredSize(this.messageTextArea.getSize());
 
         this.messageTextArea.addKeyListener(new KeyAdapter() {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     try {
-                        chatAPI.sendMessageToGroup(group.getId(),activeUser.getUserName(),messageTextArea.getText());
+                        chatAPI.sendMessageToGroup(group.getId(), activeUser.getUserName(), messageTextArea.getText());
                         messageTextArea.setText("");
                     } catch (ChatCommunicationException e1) {
                         ExceptionHandlingUtils.handleChatCommunitationException(e1);
@@ -141,7 +141,7 @@ public class ChatGui extends JFrame{
     private JPanel createChatPannel() {
         JPanel chatPannel = new JPanel();
 
-        chatPannel.setSize(600,320);
+        chatPannel.setSize(600, 320);
         chatPannel.setPreferredSize(chatPannel.getSize());
 
         this.messageList = new JList<String>();
@@ -160,7 +160,7 @@ public class ChatGui extends JFrame{
         UserDTO activeUser;
 
         Scanner scanner = new Scanner(System.in);
-        try{
+        try {
             String usernameForRegistry = JOptionPane.showInputDialog("Digite um nome de usuário para registro.");
 
             activeUser = chatAPI.register(usernameForRegistry);
@@ -187,7 +187,7 @@ public class ChatGui extends JFrame{
     /**
      * Message handler específico para interface de usuário.
      */
-    private class GUIMessageHandler implements MessageHandler{
+    private class GUIMessageHandler implements MessageHandler {
 
         protected GUIMessageHandler() {
             super();
@@ -199,10 +199,10 @@ public class ChatGui extends JFrame{
         }
 
         @Override
-        public void notifyMessage(MessageDTO message){
+        public void notifyMessage(MessageDTO message) {
             DefaultListModel<String> model = (DefaultListModel<String>) messageList.getModel();
 
-            if(message.getGroupId().equals(group.getId())) {
+            if (message.getGroupId().equals(group.getId())) {
                 String formatedMessage = null;
                 String dateInHoursMinutesFormat = new SimpleDateFormat("HH:mm").format(message.getSendTime());
                 if (isServerMesssage(message)) {
@@ -216,7 +216,7 @@ public class ChatGui extends JFrame{
 
         }
 
-        private boolean isServerMesssage(MessageDTO message){
+        private boolean isServerMesssage(MessageDTO message) {
             return message.getAuthorUserName().equals("server");
         }
     }

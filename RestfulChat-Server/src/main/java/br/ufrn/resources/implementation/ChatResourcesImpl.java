@@ -38,11 +38,13 @@ public class ChatResourcesImpl implements ChatResources {
         groupService.sendMessageToGroup(sendMessageDTO.getGroupId(),sendMessageDTO.getUsername(),sendMessageDTO.getMessageContent());
     }
 
+    @Override
     @RequestMapping(value = "/registernotification")
     public SseEmitter registerEmmiter(@RequestParam String username){
         return emitterStore.createEmitterForUser(username);
     }
 
+    @Override
     @RequestMapping(value = "/unregisternotification")
     public void unregisterUser(@RequestParam String username){
        emitterStore.unregisterUser(username);
