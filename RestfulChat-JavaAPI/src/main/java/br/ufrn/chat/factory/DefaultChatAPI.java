@@ -2,8 +2,10 @@ package br.ufrn.chat.factory;
 
 import br.ufrn.chat.ChatAPI;
 import br.ufrn.chat.client.ChatResourceClient;
+import br.ufrn.chat.client.ClientException;
 import br.ufrn.chat.client.GroupResourceClient;
 import br.ufrn.chat.client.UserResourceClient;
+import br.ufrn.chat.exception.ChatApiExceptionHandler;
 import br.ufrn.chat.exception.ChatCommunicationException;
 import br.ufrn.chat.messagery.EventBasedMessageHandlerDecorator;
 import br.ufrn.chat.messagery.MessageHandler;
@@ -32,8 +34,8 @@ public class DefaultChatAPI implements ChatAPI {
     }
 
     @Override
-    public MessageHandler registerMessageHandler(MessageHandler handler){
-        EventBasedMessageHandlerDecorator messageHandlerDecorator = new EventBasedMessageHandlerDecorator(handler,chatResourceClient);
+    public MessageHandler registerMessageHandler(MessageHandler handler) {
+        EventBasedMessageHandlerDecorator messageHandlerDecorator = new EventBasedMessageHandlerDecorator(handler, chatResourceClient);
 
         messageHandlerDecorator.startListeningEvents();
 
@@ -45,12 +47,30 @@ public class DefaultChatAPI implements ChatAPI {
         RegisterUserDTO registerUserDTO = new RegisterUserDTO();
         registerUserDTO.setUsername(username);
 
-        return userResourceClient.register(registerUserDTO);
+        try {
+            return userResourceClient.register(registerUserDTO);
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
+
+            ChatApiExceptionHandler.handleIfUserAlreadyExistsException(cause);
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+
+            throw ex;
+        }
     }
 
     @Override
     public void sendMessageToGroup(String groupId, String username, String messageContent) throws ChatCommunicationException, GroupNotExistsException {
-        chatResourceClient.sendMessageToGroup(groupId,username,messageContent);
+        try {
+            chatResourceClient.sendMessageToGroup(groupId, username, messageContent);
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
+
+            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+
+            throw ex;
+        }
     }
 
     @Override
@@ -59,13 +79,30 @@ public class DefaultChatAPI implements ChatAPI {
 
         groupCreationDTO.setCreatorUsername(creator.getUserName());
         groupCreationDTO.setName(name);
+        try {
+            groupResourceClient.createGroup(groupCreationDTO);
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
 
-        groupResourceClient.createGroup(groupCreationDTO);
+            ChatApiExceptionHandler.handleIfUserNotFoundException(cause);
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+
+            throw ex;
+        }
     }
 
     @Override
     public GroupDTO findGroupById(String groupId) throws ChatCommunicationException, GroupNotExistsException {
-        return groupResourceClient.findGroupById(groupId);
+        try {
+            return groupResourceClient.findGroupById(groupId);
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
+
+            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+
+            throw ex;
+        }
     }
 
     @Override
@@ -75,7 +112,17 @@ public class DefaultChatAPI implements ChatAPI {
         joinGroupDTO.setGroupId(groupId);
         joinGroupDTO.setUserName(user.getUserName());
 
-        groupResourceClient.joinGroup(joinGroupDTO);
+        try {
+            groupResourceClient.joinGroup(joinGroupDTO);
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
+
+            ChatApiExceptionHandler.handleIfUserNotFoundException(cause);
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
+
+            throw ex;
+        }
     }
 
     @Override
@@ -86,18 +133,44 @@ public class DefaultChatAPI implements ChatAPI {
         quitGroupDTO.setGroupId(groupId);
         quitGroupDTO.setUserName(user.getUserName());
 
-        groupResourceClient.quitGroup(quitGroupDTO);
+        try {
+            groupResourceClient.quitGroup(quitGroupDTO);
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
+
+            ChatApiExceptionHandler.handleIfUserNotFoundException(cause);
+            ChatApiExceptionHandler.handleIfGroupNotExistsException(cause);
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+
+            throw ex;
+        }
 
     }
 
     @Override
     public List<GroupDTO> listGroups() throws ChatCommunicationException {
-        return groupResourceClient.listGroups();
+        try {
+            return groupResourceClient.listGroups();
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
+
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+
+            throw ex;
+        }
     }
 
     @Override
     public List<GroupDTO> listGroups(String username) throws ChatCommunicationException {
-        return groupResourceClient.listGroups(username);
+        try {
+            return groupResourceClient.listGroups(username);
+        } catch (ClientException ex) {
+            Throwable cause = ex.getCause();
+
+            ChatApiExceptionHandler.handleIfChatCommunicationException(cause);
+
+            throw ex;
+        }
     }
 
 }

@@ -9,6 +9,7 @@ import br.ufrn.exceptions.UserAlreadyExistsException;
 import br.ufrn.exceptions.UserNotFoundException;
 import br.ufrn.requestbody.JoinGroupDTO;
 import br.ufrn.requestbody.QuitGroupDTO;
+import br.ufrn.resources.GroupResources;
 import br.ufrn.resources.configuration.Routes;
 import br.ufrn.exceptionhandling.ServerErrorDTO;
 import br.ufrn.requestbody.GroupCreationDTO;
@@ -24,9 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Implementação dos recursos Restful relacionados aos grupos.
+ */
 @RestController
 @RequestMapping(Routes.GROUP_RESOURCES)
-public class GroupResourcesImpl {
+public class GroupResourcesImpl implements GroupResources {
 
     private GroupService groupService;
     private UserService userService;
@@ -42,6 +46,7 @@ public class GroupResourcesImpl {
      *
      * @param groupCreationDTO
      **/
+    @Override
     @RequestMapping(value = "/create", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createGroup(@RequestBody GroupCreationDTO groupCreationDTO) throws UserNotFoundException {
         User creator = userService.findUserByUsername(groupCreationDTO.getCreatorUsername());
@@ -56,6 +61,7 @@ public class GroupResourcesImpl {
      * @return
      * @throws GroupNotExistsException
      */
+    @Override
     @RequestMapping(value = "/find/", method = RequestMethod.GET)
     public ResponseEntity<GroupDTO> findGroupById(@RequestParam String groupId) throws GroupNotExistsException {
         return new ResponseEntity<>(GroupDTOAssembler.fromGroup(groupService.findGroupById(groupId)), HttpStatus.OK);
@@ -67,6 +73,7 @@ public class GroupResourcesImpl {
      * @param joinGroupDTO
      * @throws GroupNotExistsException
      */
+    @Override
     @RequestMapping(value = "/join", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public void joinGroup(@RequestBody JoinGroupDTO joinGroupDTO) throws GroupNotExistsException, UserNotFoundException {
         User userToJoin = userService.findUserByUsername(joinGroupDTO.getUserName());
@@ -79,6 +86,7 @@ public class GroupResourcesImpl {
      *
      * @throws GroupNotExistsException
      */
+    @Override
     @RequestMapping(value = "/quit", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public void quitGroup(@RequestBody QuitGroupDTO quitGroupDTO) throws GroupNotExistsException, UserNotFoundException {
         User userToQuit = userService.findUserByUsername(quitGroupDTO.getUserName());
@@ -92,6 +100,7 @@ public class GroupResourcesImpl {
      * @param username
      * @return
      */
+    @Override
     @RequestMapping("/list")
     public List<GroupDTO> listGroups(@RequestParam String username) throws GroupNotExistsException, UserNotFoundException {
         List<Group> userGroups = groupService.listGroups(username);
@@ -99,6 +108,7 @@ public class GroupResourcesImpl {
         return GroupDTOAssembler.fromGroupList(userGroups);
     }
 
+    @Override
     @RequestMapping("/listall")
     public List<GroupDTO> listGroups() throws GroupNotExistsException {
         List<Group> userGroups = groupService.listGroups();
@@ -110,13 +120,13 @@ public class GroupResourcesImpl {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler({GroupNotExistsException.class, UserAlreadyExistsException.class})
     public ResponseEntity<ServerErrorDTO> exceptionHandlerForForbiddenException(HttpServletRequest req, Exception e) {
-        return new ResponseEntity<ServerErrorDTO>(new ServerErrorDTO(HttpStatus.FORBIDDEN.value(), e.getMessage()), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<ServerErrorDTO>(new ServerErrorDTO(HttpStatus.FORBIDDEN.value(), e.getMessage(),e.getClass().getName()), HttpStatus.FORBIDDEN);
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler({UserNotFoundException.class})
     public ResponseEntity<ServerErrorDTO> exceptionHandlerForResourceNotFoundExceptions(HttpServletRequest req, Exception e) {
-        return new ResponseEntity<ServerErrorDTO>(new ServerErrorDTO(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ServerErrorDTO>(new ServerErrorDTO(HttpStatus.NOT_FOUND.value(), e.getMessage(),e.getClass().getName()), HttpStatus.NOT_FOUND);
     }
 
 }

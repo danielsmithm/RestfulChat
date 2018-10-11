@@ -6,6 +6,9 @@ import br.ufrn.requestbody.RegisterUserDTO;
 
 import java.rmi.RemoteException;
 
+/**
+ * Interface para os resources de usuário.
+ */
 public interface UserResource {
     /**
      * Registra o usuário no sistema.
